@@ -1,0 +1,109 @@
+<html>
+    <head>
+        <title></title>
+    </head>
+    <body>
+        <div style ="width:888px; margin:auto;">
+                <canvas id = "myCanvas" style="background:black" width="800" height="500" ></canvas>
+        </div>
+
+        <script>
+            var canvas = document.getElementById("myCanvas");
+            var ctx = canvas.getContext("2d");
+            var dir, score=0, balls,food;
+            function init(){
+                dir = 'right';
+                score =0;
+                balls = [
+                {x:40, y:40},
+                {x:60, y:40},
+                {x:80, y:40}
+                ];
+
+                creatfood();
+            }
+            function creatfood(){
+                food = {x:Math.floor(Math.random()*39),y:Math.floor(Math.random()*24)};
+            }
+
+            init();
+            document.addEventListener("keydown",function(e){
+                var keycode = e.keyCode;
+                if(keycode == 37 && dir!='right'){
+                    dir = 'left';
+                }
+                if(keycode == 38 && dir!='down'){
+                    dir = 'up';
+                }
+                if(keycode == 39 && dir!='left'){
+                    dir = 'right';
+                }
+                if(keycode == 40 && dir!='up'){
+                    dir = 'down';
+                }
+            });
+
+
+
+            function add(){
+                var lastball = balls[balls.length-1];
+                if(dir=='right'){
+                    balls.push({x:lastball.x + 20,y:lastball.y});
+                }
+                if(dir == 'down'){
+                    balls.push({x:lastball.x, y:lastball.y+20});
+                }
+                if(dir == "left"){
+                    balls.push({x:lastball.x - 20,y:lastball.y});
+                }
+                if(dir == "up"){
+                    balls.push({x:lastball.x,y:lastball.y-20});
+                }
+                
+            }
+
+            function ani(){
+                ctx.clearRect(0,0,888,550);
+                
+                balls.shift();
+                add();
+
+                var lastball = balls[balls.length-1];
+                if(lastball.x == food.x*20 && lastball.y == food.y*20){
+                    score = score +1;
+                    add();
+                    creatfood();
+                }
+
+
+                for(var i=0;i<balls.length;i++){
+                    var ball = balls[i];
+                    if(i==balls.length-1){
+                        ctx.fillStyle = "lightgreen";
+                    }
+                    else{
+                        ctx.fillStyle = "red";
+                    }
+                    if(ball.x>780){
+                        ball.x = 0;
+                    }
+                    if(ball.x<0){
+                        ball.x = 780;
+                    }
+                    if(ball.y>480){
+                        ball.y = 0;
+                    }
+                    if(ball.y<0){
+                        ball.y =480;
+                    }
+                    ctx.fillRect(ball.x, ball.y,19,19);
+                }
+                ctx.fillRect(food.x*20, food.y*20,19,19);
+                ctx.fillText("Sore: "+score,400,480);
+            }
+             setInterval(ani,222);
+        </script>
+        
+
+    </body>
+</html>
